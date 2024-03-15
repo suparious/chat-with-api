@@ -35,13 +35,20 @@ router.post('/query', isAuthenticated, async (req, res) => {
       chartPath = `/downloads/${path.basename(filePath)}`;
     }
 
-    res.json({
-      query: processedQuery,
-      data: data,
-      message: data && data.data ? "" : "No specific data found, but here's a summary: " + processedQuery, // Added a separate message field
-      chart: chartPath,
-      status: "REQUEST_SUCCEEDED",
-    });
+    if (!data || (data && !data.data)) {
+      res.status(200).json({
+        query: processedQuery,
+        message: "No specific data found for your query.",
+        status: "REQUEST_SUCCEEDED_NO_DATA",
+      });
+    } else {
+      res.json({
+        query: processedQuery,
+        data: data,
+        chart: chartPath,
+        status: "REQUEST_SUCCEEDED",
+      });
+    }
   } catch (error) {
     console.error('API Query Error:', error.message);
     console.error('Error stack:', error.stack);

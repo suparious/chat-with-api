@@ -28,9 +28,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
                 const result = await response.json();
 
-                // Hide the progress indicator
-                toggleProgressIndicator(false);
-
                 // Clear previous results
                 const previousResult = document.getElementById('resultContainer');
                 if (previousResult) {
@@ -40,23 +37,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const resultContainer = document.createElement('div');
                 resultContainer.setAttribute('id', 'resultContainer');
 
-                // Display results based on the received data
-                if (result.Results && result.Results.series.length > 0) {
-                    console.log('Rendering received data');
-                    const dataContent = result.Results.series.map(series => `<div>${series.name}: ${series.data}</div>`).join('');
-                    resultContainer.innerHTML = dataContent;
-                } else if (result.status === "REQUEST_SUCCEEDED" && !result.Results.series.length) {
-                    console.log('No data available for the provided query.');
-                    resultContainer.textContent = 'No data available for the provided query.';
+                // Check if the response indicates a successful data retrieval or an error
+                if (result.status === "REQUEST_SUCCEEDED") {
+                    if (result.data && result.data.length > 0) {
+                        console.log('Rendering received data');
+                        const dataContent = result.data.map(item => `<div>${item.name}: ${item.value}</div>`).join('');
+                        resultContainer.innerHTML = dataContent;
+                    } else {
+                        console.log('No data available for the provided query.');
+                        resultContainer.textContent = 'No data available for the provided query.';
+                    }
                 } else {
-                    console.log('Unexpected response structure from API.');
-                    resultContainer.textContent = 'An unexpected error occurred. Please try again later.';
+                    console.log('Error processing query.');
+                    resultContainer.textContent = 'An error occurred while processing your query. Please try again.';
                 }
 
                 form.after(resultContainer);
 
                 // Generate and append download buttons only if there is data
-                if (result.Results && result.Results.series.length) {
+                if (result.data && result.data.length > 0) {
                     const downloadButtons = `
                         <button onclick="downloadData('csv')">Download CSV</button>
                         <button onclick="downloadData('json')">Download JSON</button>
@@ -93,9 +92,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
                 };
             } catch (error) {
-                // Hide the progress indicator in case of an error
-                toggleProgressIndicator(false);
-
                 // Handle any errors by displaying a user-friendly error message on the page
                 console.error('An error occurred while fetching the data:', error);
                 console.error(`Error details: ${error.message}`, error.stack);
@@ -103,6 +99,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 errorContainer.style.color = 'red';
                 errorContainer.textContent = 'An error occurred while processing your query. Please try again.';
                 form.after(errorContainer);
+            } finally {
+                // Hide the progress indicator
+                toggleProgressIndicator(false);
             }
         });
     }
