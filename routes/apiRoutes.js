@@ -17,8 +17,11 @@ router.post('/query', isAuthenticated, async (req, res) => {
 
     const processedQuery = await processQuery(userQuery);
 
-    if (processedQuery.includes("I do not have real-time data capabilities")) {
-      throw new Error("The query cannot be processed due to limitations in accessing real-time data.");
+    // Revised error handling for processed query indicating a lack of real-time data
+    if (processedQuery.includes("I do not have access to real-time data")) {
+      return res.status(200).json({
+        message: "The AI does not have access to real-time data. Please refine your query to request historical data or statistics."
+      });
     }
 
     let data = await getCachedData(processedQuery);
@@ -42,16 +45,17 @@ router.post('/query', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('API Query Error:', error);
     console.error('Error stack:', error.stack);
-    if (error.message.includes("limitations in accessing real-time data")) {
+    // Specific error handling for real-time data limitations restored
+    if (error.message.includes("limitations in accessing real-time data") || error.message.includes("Invalid Request - Invalid Parameters")) {
       res.status(400).json({
         status: "REQUEST_FAILED",
-        error: 'Query cannot be processed due to limitations in accessing real-time data.',
+        error: 'Query cannot be processed due to limitations in accessing real-time data or invalid parameters.',
         details: error.message,
       });
     } else {
       res.status(500).json({
         status: "REQUEST_FAILED",
-        error: 'Internal Server Error',
+        error: 'An unexpected error occurred while processing your query.',
         details: error.message,
       });
     }

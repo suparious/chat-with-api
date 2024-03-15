@@ -33,6 +33,11 @@ async function processQuery(userQuery) {
     processedQuery = processedQuery.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
     console.log(`Processed query: ${processedQuery}`);
+    // Check if the processed query indicates a lack of real-time data access
+    if (processedQuery.toLowerCase().includes("i do not have access to real-time data")) {
+      // Inform the user directly that the AI cannot access real-time data and suggest checking official sources
+      return "The AI cannot access real-time data directly. Please specify the type of economic data you're interested in, such as historical GDP growth rates or unemployment rates, which can be fetched from official sources.";
+    }
     return processedQuery;
   } catch (error) {
     console.error(`Error processing query with OpenAI Chat Completions: ${error.message}`);

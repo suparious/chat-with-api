@@ -1,18 +1,18 @@
 # Chat_with_USA_Economy_Data
 
-This innovative app offers a Natural Language Processing (NLP) interface to interact with various public APIs, providing users with up-to-date datasets about the US economy. Designed for Financial Analysts, Economists, and Journalists, it aims to be the authoritative source for fact-checking and analysis on US economic data.
+This app leverages Natural Language Processing (NLP) to provide an interactive interface to various public APIs containing datasets about the US economy. It is aimed at Financial Analysts, Economists, and Journalists seeking accurate and up-to-date information on the US economy for fact-checking and analysis.
 
 ## Overview
 
-Chat_with_USA_Economy_Data utilizes high-performance Debian Linux servers, integrating with APIs from the Bureau of Economic Analysis, Bureau of Labour Statistics, and US Census Bureau to fetch real-time data. The app employs OpenAI's GPT-3.5-turbo model for processing natural language queries, ensuring accurate and relevant data retrieval. The backend is developed using Node.js, with MongoDB for data storage, enabling efficient data management and scalability.
+Chat_with_USA_Economy_Data is built on high-performance Debian Linux servers and integrates with APIs from the Bureau of Economic Analysis, Bureau of Labour Statistics, and US Census Bureau. The application uses the OpenAI API, specifically the GPT-3.5-turbo model, to process natural language queries. The backend is developed with Node.js and MongoDB for data storage, ensuring efficient data management and scalability.
 
 ## Features
 
-- **Real-time Economic Data**: Access to the latest US economic statistics and historical data.
-- **NLP Interface**: Utilizes OpenAI's GPT-3.5-turbo for understanding complex queries in natural language.
-- **Data Visualization**: Users can request charts and graphs for visual data representation.
-- **Downloadable Results**: Offers data downloads in CSV, JSON, or plaintext formats.
-- **High Performance**: Hosted on servers equipped with multiple CPUs and GPUs to handle intensive data processing.
+- **Real-time Economic Data**: Access up-to-date US economic statistics and historical data.
+- **NLP Interface**: Utilizes the OpenAI GPT-3.5-turbo model to understand and process complex queries.
+- **Data Visualization**: Ability to generate charts and graphs for visual data representation.
+- **Downloadable Results**: Users can download query results in CSV, JSON, or plaintext formats.
+- **High Performance**: The app is hosted on servers with multiple CPUs and GPUs, capable of handling intensive data processing.
 
 ## Getting started
 
