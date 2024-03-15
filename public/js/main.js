@@ -23,9 +23,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 // Send the query to /api/query endpoint
                 console.log(`Sending query: ${query}`);
                 const response = await fetch('/api/query', requestOptions);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
                 const result = await response.json();
 
                 // Clear previous results
@@ -37,8 +34,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const resultContainer = document.createElement('div');
                 resultContainer.setAttribute('id', 'resultContainer');
 
-                // Check if the response indicates a successful data retrieval or an error
-                if (result.status === "REQUEST_SUCCEEDED") {
+                if (response.ok && result.status === "REQUEST_SUCCEEDED") {
                     if (result.data && result.data.length > 0) {
                         console.log('Rendering received data');
                         const dataContent = result.data.map(item => `<div>${item.name}: ${item.value}</div>`).join('');
@@ -48,8 +44,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         resultContainer.textContent = 'No data available for the provided query.';
                     }
                 } else {
-                    console.log('Error processing query.');
-                    resultContainer.textContent = 'An error occurred while processing your query. Please try again.';
+                    console.error('Error processing query:', result);
+                    resultContainer.textContent = 'An error occurred while processing your query. Please check your query or try again later.';
                 }
 
                 form.after(resultContainer);
@@ -70,7 +66,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         const downloadResponse = await fetch('/api/download-result', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ format: format, data: result.Results.series }),
+                            body: JSON.stringify({ format: format, data: result.data }),
                         });
 
                         if (!downloadResponse.ok) {
@@ -97,7 +93,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.error(`Error details: ${error.message}`, error.stack);
                 const errorContainer = document.createElement('div');
                 errorContainer.style.color = 'red';
-                errorContainer.textContent = 'An error occurred while processing your query. Please try again.';
+                errorContainer.textContent = 'An error occurred while processing your query. Please check your query or try again later.';
                 form.after(errorContainer);
             } finally {
                 // Hide the progress indicator
