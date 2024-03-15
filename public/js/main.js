@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const response = await fetch('/api/query', requestOptions);
                 const result = await response.json();
 
+                console.log('Response received:', response);
+                console.log('Result parsed:', result);
+
                 // Clear previous results
                 const previousResult = document.getElementById('resultContainer');
                 if (previousResult) {
