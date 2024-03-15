@@ -40,33 +40,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const resultContainer = document.createElement('div');
                 resultContainer.setAttribute('id', 'resultContainer');
 
-                // Check if there's a direct message or status in the response
-                if (result.message) {
-                    console.log('Displaying message from response');
-                    resultContainer.textContent = result.message;
-                } else if (result.status && result.status === "REQUEST_FAILED") {
-                    console.log('Displaying error message from response');
-                    resultContainer.textContent = result.Error || 'An unknown error occurred.';
-                    if (result.details.includes('lack of real-time data capabilities')) {
-                        resultContainer.textContent = 'The query cannot be processed due to limitations in accessing real-time data. Please refine your query.';
-                    }
+                // Display results based on the received data
+                if (result.Results && result.Results.series.length > 0) {
+                    console.log('Rendering received data');
+                    const dataContent = result.Results.series.map(series => `<div>${series.name}: ${series.data}</div>`).join('');
+                    resultContainer.innerHTML = dataContent;
+                } else if (result.status === "REQUEST_SUCCEEDED" && !result.Results.series.length) {
+                    console.log('No data available for the provided query.');
+                    resultContainer.textContent = 'No data available for the provided query.';
                 } else {
-                    // Handle data display
-                    console.log('Rendering received data or chart');
-                    if (result.chart) {
-                        resultContainer.innerHTML = `<img src="${result.chart}" alt="Chart">`;
-                    } else if (result.data) {
-                        const dataContent = JSON.stringify(result.data, null, 2);
-                        resultContainer.innerHTML = `<pre>${dataContent}</pre>`;
-                    } else {
-                        resultContainer.textContent = 'No data available for the provided query.';
-                    }
+                    console.log('Unexpected response structure from API.');
+                    resultContainer.textContent = 'An unexpected error occurred. Please try again later.';
                 }
 
                 form.after(resultContainer);
 
                 // Generate and append download buttons only if there is data
-                if (result.data) {
+                if (result.Results && result.Results.series.length) {
                     const downloadButtons = `
                         <button onclick="downloadData('csv')">Download CSV</button>
                         <button onclick="downloadData('json')">Download JSON</button>
@@ -81,7 +71,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         const downloadResponse = await fetch('/api/download-result', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ format: format, data: result.data }),
+                            body: JSON.stringify({ format: format, data: result.Results.series }),
                         });
 
                         if (!downloadResponse.ok) {
