@@ -6,7 +6,7 @@
 
 <main role="main" class="container mt-4">
   <h2>Ask about the US Economy</h2>
-  <form id="economy-query-form" action="/api/query" method="POST">
+  <form id="economy-query-form" action="javascript:void(0);" method="POST">
     <div class="mb-3">
       <label for="queryInput" class="form-label">Your Query</label>
       <input type="text" class="form-control" id="queryInput" name="query" placeholder="Enter your query here, e.g., 'What is the current unemployment rate?' or 'Show GDP growth last quarter'" required>
@@ -18,5 +18,6 @@
 
 <%- include('partials/_footer.ejs') %>
 <script src="/js/main.js"></script>
+<script src="/js/progressIndicator.js"></script>
 </body>
 </html>

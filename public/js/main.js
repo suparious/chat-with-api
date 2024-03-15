@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); // Prevent the default form submission behavior
 
+            // Display the progress indicator
+            toggleProgressIndicator(true);
+
             // Get the query from the input field
             const queryInput = document.getElementById('queryInput');
             const query = queryInput.value;
@@ -24,6 +27,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const result = await response.json();
+
+                // Hide the progress indicator
+                toggleProgressIndicator(false);
 
                 // Clear previous results
                 const previousResult = document.getElementById('resultContainer');
@@ -47,8 +53,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 } else {
                     // Handle data display
                     console.log('Rendering received data or chart');
-                    if (result.url) {
-                        resultContainer.innerHTML = `<img src="${result.url}" alt="Chart">`;
+                    if (result.chart) {
+                        resultContainer.innerHTML = `<img src="${result.chart}" alt="Chart">`;
                     } else if (result.data) {
                         const dataContent = JSON.stringify(result.data, null, 2);
                         resultContainer.innerHTML = `<pre>${dataContent}</pre>`;
@@ -97,6 +103,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
                 };
             } catch (error) {
+                // Hide the progress indicator in case of an error
+                toggleProgressIndicator(false);
+
                 // Handle any errors by displaying a user-friendly error message on the page
                 console.error('An error occurred while fetching the data:', error);
                 console.error(`Error details: ${error.message}`, error.stack);
