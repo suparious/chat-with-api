@@ -1,24 +1,4 @@
 // File: nextjs-app/pages/_app.js
-
-<<<<<<< HEAD
-import { useEffect } from 'react';
-import '../styles/globals.css';
-import Layout from '../components/Layout';
-
-function MyApp({ Component, pageProps }) {
-  useEffect(() => {
-    console.log('Application has mounted.');
-  }, []);
-
-  return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  );
-}
-
-export default MyApp;
-=======
 import React, { useEffect } from 'react'
 import '../styles/globals.css'
 import Layout from '../components/Layout'
@@ -45,4 +25,4 @@ MyApp.propTypes = {
 }
 
 export default MyApp
->>>>>>> 551e70b (refactoring)
+

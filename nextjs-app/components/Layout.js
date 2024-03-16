@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-// File: nextjs-app/components/Layout.js
-
-import Head from 'next/head';
-import Link from 'next/link';
-import { Container, Navbar, Nav } from 'react-bootstrap';
-import styles from '../styles/navbar.module.css'; // Importing custom navbar styles
-
-export default function Layout({ children, title = 'Chat_with_USA_Economy_Data' }) {
-=======
 import React from 'react';
 import Head from 'next/head'
 import Link from 'next/link'
@@ -16,7 +6,6 @@ import { Container, Navbar, Nav } from 'react-bootstrap'
 import styles from '../styles/navbar.module.css' // Importing custom navbar styles
 
 const Layout = ({ children, title = 'Chat_with_USA_Economy_Data' }) => {
->>>>>>> 551e70b (refactoring)
   return (
     <>
       <Head>
@@ -44,9 +33,7 @@ const Layout = ({ children, title = 'Chat_with_USA_Economy_Data' }) => {
       </footer>
     </>
   );
-<<<<<<< HEAD
-}
-=======
+
 };
 
 // Define PropTypes for Layout component
@@ -56,4 +43,4 @@ Layout.propTypes = {
 };
 
 export default Layout;
->>>>>>> 551e70b (refactoring)
+

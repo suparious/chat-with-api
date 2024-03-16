@@ -1,32 +1,3 @@
-<<<<<<< HEAD
-import { useState } from 'react';
-import axios from 'axios';
-import Layout from '../components/Layout';
-
-export default function QueryInterface() {
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
-    try {
-      const response = await axios.post('/api/query', { query });
-      setResult(response.data);
-      console.log('Query submitted successfully:', query);
-    } catch (err) {
-      console.error('Failed to process the query:', err);
-      setError('Failed to process the query. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-=======
 import { useState } from 'react'
 import axios from 'axios'
 import Layout from '../components/Layout'
@@ -54,7 +25,6 @@ export default function QueryInterface () {
       setLoading(false)
     }
   }
->>>>>>> 551e70b (refactoring)
 
   return (
     <Layout>
@@ -88,10 +58,5 @@ export default function QueryInterface () {
         </div>
       )}
     </Layout>
-<<<<<<< HEAD
   );
 }
-=======
-  )
-}
->>>>>>> 551e70b (refactoring)
