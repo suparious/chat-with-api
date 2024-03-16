@@ -1,4 +1,4 @@
- jsutdocument.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', (event) => {
     const form = document.getElementById('economy-query-form');
 
     if (form) {

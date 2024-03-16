@@ -9,6 +9,9 @@ function toggleProgressIndicator(show) {
   }
 }
 
+// Ensure the toggleProgressIndicator function is globally accessible
+window.toggleProgressIndicator = toggleProgressIndicator;
+
 document.addEventListener('DOMContentLoaded', () => {
   // Create the progress indicator element dynamically
   const progressIndicator = document.createElement('div');
