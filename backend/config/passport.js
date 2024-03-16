@@ -16,11 +16,7 @@ module.exports = function(passport) {
         }
 
         // Match password
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err) {
-            console.error('Error comparing password for user:', username, err);
-            throw err;
-          }
+        bcrypt.compare(password, user.password).then(isMatch => {
           if (isMatch) {
             console.log('User authenticated successfully:', username);
             return done(null, user);
@@ -28,10 +24,14 @@ module.exports = function(passport) {
             console.log('Incorrect password attempt for user:', username);
             return done(null, false, { message: 'Password incorrect' });
           }
+        }).catch(err => {
+          console.error('Error comparing password for user:', username, err);
+          console.error('Error stack:', err.stack);
+          done(err);
         });
       }).catch(err => {
         console.error('Error finding user during login:', err);
-        console.error(err.stack);
+        console.error('Error stack:', err.stack);
       });
     })
   );
@@ -42,13 +42,13 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      if (err) {
-        console.error('Error deserializing user:', err);
-        console.error(err.stack);
-      }
+    User.findById(id).then(user => {
       console.log('Deserialized user:', user ? user.username : 'User not found');
-      done(err, user);
+      done(null, user);
+    }).catch(err => {
+      console.error('Error deserializing user:', err);
+      console.error('Error stack:', err.stack);
+      done(err);
     });
   });
 };

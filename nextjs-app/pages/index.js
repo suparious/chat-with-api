@@ -13,9 +13,13 @@ export async function getStaticProps() {
   } catch (error) {
     console.error('Failed to fetch welcome info:', error.message);
     console.error('Error stack:', error.stack);
+    // Providing a default value for welcomeInfo in case of error
     return {
       props: {
-        welcomeInfo: {},
+        welcomeInfo: {
+          message: 'Welcome to Chat_with_USA_Economy_Data! This is default message due to an error fetching dynamic content.',
+          appDescription: 'This application allows users to query various public APIs for datasets related to the United States economy. Due to an error, more detailed information cannot be provided at this moment.',
+        },
       },
     };
   }
