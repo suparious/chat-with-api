@@ -3,8 +3,15 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://hades:3000/api/:path*',
+        destination: 'http://localhost:3000/api/:path*',
       },
     ];
   },
+  exportPathMap: function() {
+    return {
+      '/': { page: '/' },
+      '/query-interface': { page: '/query-interface' },
+      '/charts': { page: '/charts' }
+    };
+  }
 };

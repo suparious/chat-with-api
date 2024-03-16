@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo');
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
 const cors = require('cors');
+const path = require('path');
 
 process.env.OPENAI_MODEL = process.env.OPENAI_MODEL
 
@@ -30,6 +31,14 @@ app.use(express.static("public"));
 
 // Serve generated charts statically
 app.use('/downloads', express.static('downloads'));
+
+// Serve static files from Next.js application
+app.use(express.static("../nextjs-app/out"));
+
+// Catch-all route to serve Next.js application
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../nextjs-app/out", "index.html"));
+});
 
 // Database connection
 mongoose
