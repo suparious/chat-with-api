@@ -9,6 +9,7 @@ const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
 const cors = require('cors');
 const path = require('path');
 const passport = require('passport');
+const axios = require('axios'); // Newly added for making HTTP requests
 
 // Passport config
 require('./config/passport')(passport);
@@ -57,7 +58,7 @@ app.use(
 
 // Configuring CORS to allow credentials
 app.use(cors({
-  origin: 'http://hades:3001',
+  origin: process.env.CORS_ORIGIN, // Updated to use environment variable for CORS origin
   credentials: true
 }));
 
