@@ -1,29 +1,30 @@
 // utils/nlpProcessor.js
 
-const openai = require("openai").default;
+const OpenAI = require("openai");
 const { fetchDataFromBEA, fetchDataFromBLS, fetchDataFromCensus } = require('./dataFetchers');
 require("dotenv").config();
 
-const openAIClient = new openai({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function processQuery(userQuery) {
   try {
     console.log(`Original user query: ${userQuery}`);
-    // Update to include function calling if supported by the model
-    const response = await openAIClient.createCompletion({
+    const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
-      prompt: userQuery,
-      temperature: 0.5,
-      max_tokens: 100,
-      n: 1,
-      stop: null,
-      // Assuming the function calling syntax is as per OpenAI's documentation for the updated model
-      user: "application_user",
-      system: "economy_data_retrieval",
-      function: "process_economic_query",
+      messages: [{
+        role: "system",
+        content: "You are a helpful assistant."
+      }, {
+        role: "user",
+        content: userQuery
+      }],
     });
+
+    if (!response || !response.choices || response.choices.length === 0) {
+      throw new Error('No response from OpenAI.');
+    }
 
     const processedQuery = response.choices[0].text.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
@@ -31,7 +32,7 @@ async function processQuery(userQuery) {
     return processedQuery;
   } catch (error) {
     console.error(`Error processing query with OpenAI: ${error.message}`);
-    console.error('Error details:', error.stack);
+    console.error('Error details:', error);
     throw error;
   }
 }
