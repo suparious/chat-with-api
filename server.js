@@ -6,9 +6,9 @@ const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
+const cors = require('cors');
 
-// Ensure OPENAI_MODEL has a default value if not specified in the .env file
-process.env.OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
+process.env.OPENAI_MODEL = process.env.OPENAI_MODEL
 
 if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET) {
   console.error("Error: config environment variables not set. Please create/edit .env configuration file.");
@@ -52,6 +52,12 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
   }),
 );
+
+// Configuring CORS to allow credentials
+app.use(cors({
+  origin: 'http://hades:3001',
+  credentials: true
+}));
 
 app.on("error", (error) => {
   console.error(`Server error: ${error.message}`);

@@ -8,6 +8,7 @@ const { saveQueryResult } = require('../utils/fileGenerator');
 const { handleApiError } = require('../utils/errorHandler');
 const fs = require('fs');
 const path = require('path');
+const { fetchDataFromBEA, fetchDataFromBLS, fetchDataFromCensus } = require('../utils/dataFetchers');
 
 router.post('/query', isAuthenticated, async (req, res) => {
   try {
@@ -120,6 +121,24 @@ router.get('/welcome-info', (req, res) => {
     message: "Welcome to Chat_with_USA_Economy_Data! This innovative application provides access to the most accurate live data on the US economy.",
     appDescription: "Through a Natural Language Processing (NLP) interface, users can query various public APIs for datasets related to the United States' economy, including information from the Bureau of Economic Analysis, Bureau of Labour Statistics, and the US Census Bureau."
   });
+});
+
+router.get('/chart-data', isAuthenticated, async (req, res) => {
+  try {
+    const beaData = await fetchDataFromBEA({keyword: "GDP", frequency: "A"});
+    const blsData = await fetchDataFromBLS({seriesId: "LNS14000000"});
+    const censusData = await fetchDataFromCensus({get: "POP", for: "state:*"});
+
+    res.json({
+      beaData,
+      blsData,
+      censusData
+    });
+  } catch (error) {
+    console.error('Failed to fetch chart data:', error.message);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ error: 'Failed to fetch chart data' });
+  }
 });
 
 module.exports = router;
