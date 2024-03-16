@@ -22,13 +22,17 @@ async function processQuery(userQuery) {
       }],
     });
 
-    if (!response || !response.choices || response.choices.length === 0) {
-      throw new Error('No response from OpenAI.');
+    if (!response || !response.choices || response.choices.length === 0 || !response.choices[0].text) {
+      console.error('No response or invalid response structure from OpenAI.');
+      throw new Error('No response or invalid response structure from OpenAI.');
     }
 
-    const processedQuery = response.choices[0].text.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
-
+    const processedQuery = typeof response.choices[0].text === 'string' ? response.choices[0].text.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ') : '';
     console.log(`Processed query: ${processedQuery}`);
+    if (processedQuery === '') {
+      throw new Error('Failed to process query. The response from OpenAI was not as expected.');
+    }
+
     return processedQuery;
   } catch (error) {
     console.error(`Error processing query with OpenAI: ${error.message}`);
