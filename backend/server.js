@@ -8,8 +8,10 @@ const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
 const cors = require('cors');
 const path = require('path');
+const passport = require('passport');
 
-process.env.OPENAI_MODEL = process.env.OPENAI_MODEL
+// Passport config
+require('./config/passport')(passport);
 
 if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET) {
   console.error("Error: config environment variables not set. Please create/edit .env configuration file.");
@@ -53,6 +55,10 @@ app.use(cors({
   origin: 'http://hades:3001',
   credentials: true
 }));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.on("error", (error) => {
   console.error(`Server error: ${error.message}`);

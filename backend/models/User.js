@@ -1,24 +1,42 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true }
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true, unique: true }
 });
 
-userSchema.pre('save', function(next) {
-  const user = this;
-  if (!user.isModified('password')) return next();
-  bcrypt.hash(user.password, 10, (err, hash) => {
+// Password hashing middleware before saving a user
+UserSchema.pre('save', function(next) {
+  if (!this.isModified('password')) return next();
+
+  bcrypt.genSalt(10, (err, salt) => {
     if (err) {
-      console.error('Error hashing password:', err);
+      console.error('Error generating salt:', err);
       return next(err);
     }
-    user.password = hash;
-    next();
+
+    bcrypt.hash(this.password, salt, (err, hash) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return next(err);
+      }
+      this.password = hash;
+      next();
+    });
   });
 });
 
-const User = mongoose.model('User', userSchema);
+// Method to compare password for login
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+    if (err) {
+      console.error('Error comparing password:', err);
+      return cb(err);
+    }
+    cb(null, isMatch);
+  });
+};
 
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);
