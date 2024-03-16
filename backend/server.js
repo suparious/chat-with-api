@@ -23,22 +23,8 @@ const port = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Setting the templating engine to EJS
-app.set("view engine", "ejs");
-
-// Serve static files
-app.use(express.static("public"));
-
 // Serve generated charts statically
 app.use('/downloads', express.static('downloads'));
-
-// Serve static files from Next.js application
-app.use(express.static("../nextjs-app/out"));
-
-// Catch-all route to serve Next.js application
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../nextjs-app/out", "index.html"));
-});
 
 // Database connection
 mongoose
@@ -96,9 +82,9 @@ app.use(authRoutes);
 // API Routes - Added for handling API requests
 app.use('/api', apiRoutes);
 
-// Root path response
+// API Root path response
 app.get("/", (req, res) => {
-  res.render("index");
+  res.json({ message: "Chat_with_USA_Economy_Data API is operational" });
 });
 
 // If no routes handled the request, it's a 404
