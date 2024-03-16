@@ -27,16 +27,6 @@ export async function getStaticProps () {
 }
 
 export default function Home({ welcomeInfo }) {
-          appDescription: 'This application allows users to query various public APIs for datasets related to the United States economy. Due to an error, more detailed information cannot be provided at this moment.'
-        }
-        e.propTypes = {
-  welcomeInfo: PropTypes.shape({
-    message: PropTypes.string,
-    appDescription: PropTypes.string
-  }).isRequired
-}
-
-export default function Home ({ welcomeInfo }) {
   return (
     <Layout>
       <div>
@@ -48,4 +38,12 @@ export default function Home ({ welcomeInfo }) {
         {welcomeInfo.appDescription && <p>{welcomeInfo.appDescription}</p>}
       </div>
     </Layout>
-)
+  );
+}
+
+Home.propTypes = {
+  welcomeInfo: PropTypes.shape({
+    message: PropTypes.string,
+    appDescription: PropTypes.string
+  }).isRequired
+}

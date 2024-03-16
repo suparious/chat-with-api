@@ -33,7 +33,6 @@ const Layout = ({ children, title = 'Chat_with_USA_Economy_Data' }) => {
       </footer>
     </>
   );
-
 };
 
 // Define PropTypes for Layout component
@@ -43,4 +42,3 @@ Layout.propTypes = {
 };
 
 export default Layout;
-
