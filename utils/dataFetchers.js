@@ -17,7 +17,8 @@ async function fetchDataFromBEA(queryParams) {
     return response.data;
   } catch (error) {
     console.error('Error fetching data from BEA API:', error.message);
-    console.error('Request URL:', error.config.url);
+    console.error('Request failed with status:', error.response?.status);
+    console.error('Request URL:', error.config?.url);
     console.error('Error stack:', error.stack);
     throw error;
   }
@@ -43,7 +44,8 @@ async function fetchDataFromBLS(queryParams) {
     return response.data;
   } catch (error) {
     console.error('Error fetching data from BLS API:', error.message);
-    console.error('Request URL:', error.config.url);
+    console.error('Request failed with status:', error.response?.status);
+    console.error('Request URL:', error.config?.url);
     console.error('Error stack:', error.stack);
     throw error;
   }
@@ -65,7 +67,8 @@ async function fetchDataFromCensus(queryParams) {
     return response.data;
   } catch (error) {
     console.error('Error fetching data from US Census Bureau API:', error.message);
-    console.error('Request URL:', error.config.url);
+    console.error('Request failed with status:', error.response?.status);
+    console.error('Request URL:', error.config?.url);
     console.error('Error stack:', error.stack);
     throw error;
   }

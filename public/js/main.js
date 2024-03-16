@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+ jsutdocument.addEventListener('DOMContentLoaded', (event) => {
     const form = document.getElementById('economy-query-form');
 
     if (form) {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
                 } else {
                     console.error('Error processing query:', result);
-                    resultContainer.textContent = 'An error occurred while processing your query. Please check your query or try again later.';
+                    resultContainer.textContent = `An error occurred while processing your query: ${result.error && result.error.length > 0 ? result.error : 'Please check your query or try again later.'}`;
                 }
 
                 form.after(resultContainer);
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.error(`Error details: ${error.message}`, error.stack);
                 const errorContainer = document.createElement('div');
                 errorContainer.style.color = 'red';
-                errorContainer.textContent = 'An error occurred while processing your query. Please check your query or try again later.';
+                errorContainer.textContent = `An error occurred while processing your query. Please check your query or try again later.`;
                 form.after(errorContainer);
             } finally {
                 // Hide the progress indicator
