@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
 class MyDocument extends Document {
   render() {
+=======
+import React from 'react';
+import Document, { Html, Head, Main, NextScript } from 'next/document'
+
+class MyDocument extends Document {
+  render () {
+>>>>>>> 551e70b (refactoring)
     return (
       <Html>
         <Head>
@@ -12,8 +20,16 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
+<<<<<<< HEAD
     );
   }
 }
 
 export default MyDocument;
+=======
+    )
+  }
+}
+
+export default MyDocument
+>>>>>>> 551e70b (refactoring)

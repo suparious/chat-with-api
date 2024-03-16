@@ -1,5 +1,6 @@
 // File: nextjs-app/pages/_app.js
 
+<<<<<<< HEAD
 import { useEffect } from 'react';
 import '../styles/globals.css';
 import Layout from '../components/Layout';
@@ -17,3 +18,31 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+=======
+import React, { useEffect } from 'react'
+import '../styles/globals.css'
+import Layout from '../components/Layout'
+import { QueryProvider } from '../context/QueryContext'
+import PropTypes from 'prop-types'
+
+function MyApp ({ Component, pageProps }) {
+  useEffect(() => {
+    console.log('Application has mounted.')
+  }, [])
+
+  return (
+    <QueryProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </QueryProvider>
+  )
+}
+
+MyApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired
+}
+
+export default MyApp
+>>>>>>> 551e70b (refactoring)

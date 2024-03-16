@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import axios from 'axios';
 import Layout from '../components/Layout';
 
@@ -13,11 +14,30 @@ export async function getStaticProps() {
   } catch (error) {
     console.error('Failed to fetch welcome info:', error.message);
     console.error('Error stack:', error.stack);
+=======
+import axios from 'axios'
+import Layout from '../components/Layout'
+import PropTypes from 'prop-types'
+
+export async function getStaticProps () {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000' // Use environment variable
+  try {
+    const res = await axios.get(`${backendUrl}/api/welcome-info`)
+    return {
+      props: {
+        welcomeInfo: res.data
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch welcome info:', error.message)
+    console.error('Error stack:', error.stack)
+>>>>>>> 551e70b (refactoring)
     // Providing a default value for welcomeInfo in case of error
     return {
       props: {
         welcomeInfo: {
           message: 'Welcome to Chat_with_USA_Economy_Data! This is default message due to an error fetching dynamic content.',
+<<<<<<< HEAD
           appDescription: 'This application allows users to query various public APIs for datasets related to the United States economy. Due to an error, more detailed information cannot be provided at this moment.',
         },
       },
@@ -26,6 +46,23 @@ export async function getStaticProps() {
 }
 
 export default function Home({ welcomeInfo }) {
+=======
+          appDescription: 'This application allows users to query various public APIs for datasets related to the United States economy. Due to an error, more detailed information cannot be provided at this moment.'
+        }
+      }
+    }
+  }
+}
+
+Home.propTypes = {
+  welcomeInfo: PropTypes.shape({
+    message: PropTypes.string,
+    appDescription: PropTypes.string
+  }).isRequired
+}
+
+export default function Home ({ welcomeInfo }) {
+>>>>>>> 551e70b (refactoring)
   return (
     <Layout>
       <div>
@@ -37,5 +74,9 @@ export default function Home({ welcomeInfo }) {
         {welcomeInfo.appDescription && <p>{welcomeInfo.appDescription}</p>}
       </div>
     </Layout>
+<<<<<<< HEAD
   );
+=======
+  )
+>>>>>>> 551e70b (refactoring)
 }
