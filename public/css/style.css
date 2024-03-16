@@ -19,3 +19,16 @@
   height: 3rem;
   margin-bottom: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  #progressIndicator {
+    width: 90%; /* Make the progress indicator take more space on smaller screens */
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+}
+
+@media screen and (min-width: 769px) {
+  #progressIndicator {
+    width: 50%; /* On larger screens, limit its width for better appearance */
+  }
+}
