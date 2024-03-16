@@ -15,7 +15,7 @@ export default function Layout({ children, title = 'Chat_with_USA_Economy_Data' 
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Link href="/" passHref><Nav.Link>Home</Nav.Link></Link>
-              <Link href="/query-interface" passHref><Nav.Link>Query Interface</Nav.Link></Link>
+              <Link href="/query" passHref><Nav.Link>Query</Nav.Link></Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

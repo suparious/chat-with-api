@@ -5,7 +5,7 @@ const router = express.Router();
 const User = require('../models/User');
 
 // User registration
-router.post('/auth/register', async (req, res) => {
+router.post('/api/auth/register', async (req, res) => {
   const { username, password, email } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -22,17 +22,17 @@ router.post('/auth/register', async (req, res) => {
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error during registration:', error);
-    console.error(error.stack);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
 // User login
-router.post('/auth/login', (req, res, next) => {
+router.post('/api/auth/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error('Server error during authentication:', err);
-      console.error(err.stack);
+      console.error('Error stack:', err.stack);
       return res.status(500).json({ message: 'Server error during authentication' });
     }
     if (!user) {
@@ -41,7 +41,7 @@ router.post('/auth/login', (req, res, next) => {
     req.logIn(user, err => {
       if (err) {
         console.error('Server error during session creation:', err);
-        console.error(err.stack);
+        console.error('Error stack:', err.stack);
         return res.status(500).json({ message: 'Server error during session creation' });
       }
       return res.status(200).json({ message: 'Logged in successfully' });
@@ -50,11 +50,11 @@ router.post('/auth/login', (req, res, next) => {
 });
 
 // User logout
-router.get('/auth/logout', (req, res) => {
+router.get('/api/auth/logout', (req, res) => {
   req.logout(err => {
     if (err) {
       console.error('Error during session destruction:', err);
-      console.error(err.stack);
+      console.error('Error stack:', err.stack);
       return res.status(500).json({ message: 'Error logging out' });
     }
     res.status(200).json({ message: 'Logged out successfully' });

@@ -11,7 +11,7 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3000/auth/register', { username, password, email });
+            const res = await axios.post('/api/auth/register', { username, password, email });
             console.log('Registration successful:', res.data.message);
             // Redirect to home page on successful registration
             Router.push('/');

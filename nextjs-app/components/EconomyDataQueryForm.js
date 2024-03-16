@@ -11,7 +11,7 @@ function EconomyDataQueryForm() {
         setError('');
         setResults(null);
         try {
-            const response = await axios.post('http://localhost:3000/api/data/query', { query }); // INPUT_REQUIRED {Please ensure the URL matches your backend configuration}
+            const response = await axios.post('/api/data/query', { query });
             setResults(response.data);
         } catch (err) {
             console.error('Error fetching data:', err.response ? err.response.data.message : 'Failed to fetch data. Please try again.', err);

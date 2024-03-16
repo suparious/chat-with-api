@@ -10,7 +10,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3000/auth/login', { username, password });
+            const res = await axios.post('/api/auth/login', { username, password });
             console.log('Login successful:', res.data.message);
             // Redirect to home page on successful login
             Router.push('/');
