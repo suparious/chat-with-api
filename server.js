@@ -7,6 +7,9 @@ const MongoStore = require('connect-mongo');
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
 
+// Ensure OPENAI_MODEL has a default value if not specified in the .env file
+process.env.OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
+
 if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET) {
   console.error("Error: config environment variables not set. Please create/edit .env configuration file.");
   process.exit(-1);
