@@ -141,4 +141,12 @@ router.get('/chart-data', isAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/checkSession', (req, res) => {
+  if (req.session.user) {
+    res.json({ user: req.session.user });
+  } else {
+    res.status(401).json({ message: 'No active session' });
+  }
+});
+
 module.exports = router;

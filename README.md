@@ -14,7 +14,7 @@ The application is built on a high-performance Debian Linux server architecture,
 - Generate charts and graphs for visual data representation
 - High-performance server architecture to handle intensive data processing tasks
 
-## Getting Started
+## Getting started
 
 ### Requirements
 
