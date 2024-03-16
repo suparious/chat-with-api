@@ -1,56 +1,63 @@
 const express = require('express');
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
+const User = require('../models/User');
 
-router.get('/auth/register', (req, res) => {
-  res.render('register');
-});
-
+// User registration
 router.post('/auth/register', async (req, res) => {
+  const { username, password, email } = req.body;
   try {
-    const { username, password, email } = req.body;
-    // User model will automatically hash the password using bcrypt
-    await User.create({ username, password, email });
-    res.redirect('/auth/login');
+    let user = await User.findOne({ username });
+    if (user) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    user = new User({
+      username,
+      email,
+      password: hashedPassword
+    });
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error('Registration error:', error);
-    console.error(error.stack); // Log the full error stack for better debugging
-    res.status(500).send(error.message);
+    console.error('Error during registration:', error);
+    console.error(error.stack);
+    res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
-router.get('/auth/login', (req, res) => {
-  res.render('login');
-});
-
-router.post('/auth/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(400).send('User not found');
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (isMatch) {
-      req.session.userId = user._id;
-      return res.redirect('/');
-    } else {
-      return res.status(400).send('Password is incorrect');
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    return res.status(500).send(error.message);
-  }
-});
-
-router.get('/auth/logout', (req, res) => {
-  req.session.destroy(err => {
+// User login
+router.post('/auth/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
     if (err) {
-      console.error('Error during session destruction:', err); // gpt_pilot_debugging_log
-      return res.status(500).send('Error logging out');
+      console.error('Server error during authentication:', err);
+      console.error(err.stack);
+      return res.status(500).json({ message: 'Server error during authentication' });
     }
-    res.redirect('/auth/login');
+    if (!user) {
+      return res.status(401).json({ message: info.message });
+    }
+    req.logIn(user, err => {
+      if (err) {
+        console.error('Server error during session creation:', err);
+        console.error(err.stack);
+        return res.status(500).json({ message: 'Server error during session creation' });
+      }
+      return res.status(200).json({ message: 'Logged in successfully' });
+    });
+  })(req, res, next);
+});
+
+// User logout
+router.get('/auth/logout', (req, res) => {
+  req.logout(err => {
+    if (err) {
+      console.error('Error during session destruction:', err);
+      console.error(err.stack);
+      return res.status(500).json({ message: 'Error logging out' });
+    }
+    res.status(200).json({ message: 'Logged out successfully' });
   });
 });
 
