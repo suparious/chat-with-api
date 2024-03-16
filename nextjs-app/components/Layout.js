@@ -3,16 +3,14 @@ import Link from 'next/link';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 
 export default function Layout({ children, title = 'Chat_with_USA_Economy_Data' }) {
-  console.log(`Rendering Layout for: ${title}`);
   return (
     <>
       <Head>
         <title>{title}</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-CTV9l9nT+E+Y4p1PjsrF5ZDv3ylZdCJ0zYzwR+l5gLF5jEw3RHZ5lA6wbe4Q6gG8" crossorigin="anonymous" />
       </Head>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="/">Chat_with_USA_Economy_Data</Navbar.Brand>
+          <Link href="/" passHref><Navbar.Brand>Chat_with_USA_Economy_Data</Navbar.Brand></Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
