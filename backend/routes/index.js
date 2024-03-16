@@ -18,6 +18,4 @@ router.get('/api/welcome-info', (req, res) => {
   });
 });
 
-// Add more API routes here
-
 module.exports = router;
