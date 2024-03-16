@@ -1,6 +1,9 @@
+// File: nextjs-app/components/Layout.js
+
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container, Navbar, Nav } from 'react-bootstrap';
+import styles from '../styles/navbar.module.css'; // Importing custom navbar styles
 
 export default function Layout({ children, title = 'Chat_with_USA_Economy_Data' }) {
   return (
@@ -8,14 +11,14 @@ export default function Layout({ children, title = 'Chat_with_USA_Economy_Data' 
       <Head>
         <title>{title}</title>
       </Head>
-      <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar bg="dark" variant="dark" expand="lg" className={styles.navbar}>
         <Container>
-          <Link href="/" passHref><Navbar.Brand>Chat_with_USA_Economy_Data</Navbar.Brand></Link>
+          <Link href="/" passHref><Navbar.Brand className={styles.navbarBrand}>Chat_with_USA_Economy_Data</Navbar.Brand></Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Link href="/" passHref><Nav.Link>Home</Nav.Link></Link>
-              <Link href="/query" passHref><Nav.Link>Query</Nav.Link></Link>
+              <Link href="/" passHref><Nav.Link className={styles.navLink}>Home</Nav.Link></Link>
+              <Link href="/query#" passHref><Nav.Link className={styles.navLink}>Query</Nav.Link></Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
