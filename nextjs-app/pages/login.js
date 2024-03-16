@@ -10,13 +10,14 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('/api/auth/login', { username, password });
-            console.log('Login successful:', res.data);
+            const res = await axios.post('http://localhost:3000/auth/login', { username, password });
+            console.log('Login successful:', res.data.message);
             // Redirect to home page on successful login
             Router.push('/');
         } catch (err) {
-            console.error('Login failed:', err);
-            setError('Login failed. Please check your credentials.');
+            console.error('Login failed:', err.response ? err.response.data.message : err.message);
+            console.error('Error stack:', err.stack); // Log the entire error stack
+            setError(err.response ? err.response.data.message : 'Login failed. Please check your credentials.');
         }
     };
 

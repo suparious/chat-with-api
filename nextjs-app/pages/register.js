@@ -11,13 +11,14 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('/api/auth/register', { username, password, email });
-            console.log('Registration successful for:', username);
-            // Redirect to login page on successful registration
-            Router.push('/login');
+            const res = await axios.post('http://localhost:3000/auth/register', { username, password, email });
+            console.log('Registration successful:', res.data.message);
+            // Redirect to home page on successful registration
+            Router.push('/');
         } catch (err) {
-            console.error('Registration failed for:', username, 'Error:', err);
-            setError('Registration failed. Please try again.');
+            console.error('Registration failed:', err.response ? err.response.data.message : err.message);
+            console.error('Error stack:', err.stack); // Log the entire error stack
+            setError(err.response ? err.response.data.message : 'Registration failed. Please check your credentials.');
         }
     };
 
