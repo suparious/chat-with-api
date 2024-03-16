@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const queryInput = document.getElementById('queryInput');
             const query = queryInput.value;
 
+            // Frontend validation for nonsensical or future-dated queries
+            const currentYear = new Date().getFullYear();
+            const futureYearRegex = /\b(20\d{2})\b/g;
+            const queryYearMatch = query.match(futureYearRegex);
+            if (queryYearMatch && queryYearMatch.some(year => parseInt(year) > currentYear)) {
+                alert('Queries about future events are not supported. Please refine your query.');
+                toggleProgressIndicator(false);
+                return;
+            }
+
             // Prepare the POST request
             const requestOptions = {
                 method: 'POST',

@@ -5,6 +5,7 @@ const { getCachedData, saveToCache } = require('../utils/cacheManager');
 const { generateChart } = require('../utils/chartGenerator');
 const { isAuthenticated } = require('./middleware/authMiddleware');
 const { saveQueryResult } = require('../utils/fileGenerator');
+const { handleApiError } = require('../utils/errorHandler');
 const fs = require('fs');
 const path = require('path');
 
@@ -52,19 +53,23 @@ router.post('/query', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('API Query Error:', error.message);
     console.error('Error stack:', error.stack);
-    if (error.message.includes("limitations in accessing real-time data") || error.message.includes("Invalid Request - Invalid Parameters")) {
-      res.status(400).json({
-        status: "REQUEST_FAILED",
-        error: 'Query cannot be processed due to limitations in accessing real-time data or invalid parameters.',
-        details: error.message,
-      });
-    } else {
-      res.status(500).json({
-        status: "REQUEST_FAILED",
-        error: 'An unexpected error occurred while processing your query.',
-        details: error.message,
-      });
+    console.error('Full error:', error);
+
+    // Custom error handling for specific scenarios
+    let customMessage = '';
+    if (error.message.includes("limitations in accessing real-time data")) {
+      customMessage = 'Query cannot be processed due to limitations in accessing real-time data.';
+    } else if (error.message.includes("Invalid Request - Invalid Parameters")) {
+      customMessage = 'The request contains invalid parameters.';
     }
+
+    const { status, message } = handleApiError(error, 'An unexpected error occurred while processing your query.');
+
+    res.status(status).json({
+      status: "REQUEST_FAILED",
+      error: customMessage || message,
+      details: customMessage ? error.message : undefined
+    });
   }
 });
 
@@ -75,6 +80,7 @@ router.get('/query-interface', isAuthenticated, (req, res) => {
   } catch (error) {
     console.error('Error rendering query-interface page:', error.message);
     console.error('Error stack:', error.stack);
+    console.error('Full error:', error);
     res.status(500).send('Error rendering the page.');
   }
 });
@@ -93,12 +99,14 @@ router.post('/download-result', isAuthenticated, async (req, res) => {
       if (err) {
         console.error('File download error:', err.message);
         console.error('Error stack:', err.stack);
+        console.error('Full error:', err);
         return res.status(500).send('Error downloading the file.');
       }
     });
   } catch (error) {
     console.error('Download-result error:', error.message);
     console.error('Error stack:', error.stack);
+    console.error('Full error:', error);
     res.status(500).json({
       status: "REQUEST_FAILED",
       error: 'Internal Server Error',

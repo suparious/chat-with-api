@@ -3,6 +3,7 @@
 const OpenAI = require("openai");
 const { fetchDataFromBEA, fetchDataFromBLS, fetchDataFromCensus } = require('./dataFetchers');
 require("dotenv").config();
+const { handleApiError } = require('./errorHandler');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,6 +12,14 @@ const openai = new OpenAI({
 async function processQuery(userQuery) {
   try {
     console.log(`Original user query: ${userQuery}`);
+
+    // Check if the query is asking about future events
+    const currentYear = new Date().getFullYear();
+    const queryYearMatch = userQuery.match(/\b(20\d{2})\b/g);
+    if (queryYearMatch && queryYearMatch.some(year => parseInt(year) > currentYear)) {
+      throw new Error('Queries about future events are not supported.');
+    }
+
     const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
       messages: [{
@@ -37,43 +46,49 @@ async function processQuery(userQuery) {
   } catch (error) {
     console.error(`Error processing query with OpenAI: ${error.message}`);
     console.error('Error details:', error);
-    throw error;
+    throw handleApiError(error, 'Error processing query with OpenAI');
   }
 }
 
 async function queryEconomicData(processedQuery) {
-  const beaKeywords = ['gdp', 'gross domestic product', 'economic growth'];
-  const blsKeywords = ['unemployment', 'employment', 'labor', 'job', 'wage', 'salary'];
-  const censusKeywords = ['population', 'demographics', 'census'];
+  try {
+    const beaKeywords = ['gdp', 'gross domestic product', 'economic growth'];
+    const blsKeywords = ['unemployment', 'employment', 'labor', 'job', 'wage', 'salary'];
+    const censusKeywords = ['population', 'demographics', 'census'];
 
-  let data;
+    let data;
 
-  if (beaKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
-    console.log('Query contains BEA-related keywords. Fetching data from BEA API.');
-    data = await fetchDataFromBEA({keyword: processedQuery});
-  }
-  else if (blsKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
-    console.log('Query contains BLS-related keywords. Determining appropriate seriesId for BLS API.');
-    const seriesId = determineSeriesIdFromQuery(processedQuery);
-    
-    if (!seriesId) {
-      console.log('Could not determine a valid BLS seriesId based on the query.');
-      throw new Error('Could not determine a valid BLS seriesId based on the query.');
+    if (beaKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
+      console.log('Query contains BEA-related keywords. Fetching data from BEA API.');
+      data = await fetchDataFromBEA({keyword: processedQuery});
     }
-    
-    console.log(`Fetching data from BLS API using seriesId: ${seriesId}`);
-    data = await fetchDataFromBLS({seriesId: seriesId});
-  }
-  else if (censusKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
-    console.log('Query contains Census-related keywords. Fetching data from Census API.');
-    data = await fetchDataFromCensus({get: processedQuery});
-  }
-  else {
-    console.log('Unable to determine the appropriate data source for the given query.');
-    throw new Error('Unable to determine the appropriate data source for the given query.');
-  }
+    else if (blsKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
+      console.log('Query contains BLS-related keywords. Determining appropriate seriesId for BLS API.');
+      const seriesId = determineSeriesIdFromQuery(processedQuery);
+      
+      if (!seriesId) {
+        console.log('Could not determine a valid BLS seriesId based on the query.');
+        throw new Error('Could not determine a valid BLS seriesId based on the query.');
+      }
+      
+      console.log(`Fetching data from BLS API using seriesId: ${seriesId}`);
+      data = await fetchDataFromBLS({seriesId: seriesId});
+    }
+    else if (censusKeywords.some(keyword => processedQuery.toLowerCase().includes(keyword))) {
+      console.log('Query contains Census-related keywords. Fetching data from Census API.');
+      data = await fetchDataFromCensus({get: processedQuery});
+    }
+    else {
+      console.log('Unable to determine the appropriate data source for the given query.');
+      throw new Error('Unable to determine the appropriate data source for the given query.');
+    }
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error(`Error querying economic data: ${error.message}`);
+    console.error('Error details:', error);
+    throw handleApiError(error, 'Error querying economic data');
+  }
 }
 
 function determineSeriesIdFromQuery(query) {
