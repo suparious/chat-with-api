@@ -1,18 +1,29 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
+import { destroyCookie } from 'nookies';
+import { API_ENDPOINTS } from '../utils/apiConfig';
 
 const Logout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    localStorage.removeItem('isAuthenticated');
-    console.log('User logged out. JWT token removed from localStorage.');
-    router.push('/').catch((error) => {
-      console.error('Error redirecting after logout:', error.message, error.stack);
-    });
+    const logout = async () => {
+      try {
+        await axios.post(API_ENDPOINTS.logout, {}, { withCredentials: true });
+        console.log('Logout successful');
+        destroyCookie(null, 'jwt');
+        localStorage.removeItem('isAuthenticated');
+        router.push('/');
+      } catch (err) {
+        console.error('Logout failed:', err.response ? err.response.data.message : err.message);
+        console.error('Error stack:', err.stack);
+      }
+    };
+
+    logout();
   }, [router]);
 
-  // As the logout process is instantaneous from the client side, this page will always redirect.
   return <div style={{ textAlign: 'center', marginTop: '20%' }}>Redirecting...</div>;
 };
 

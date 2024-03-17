@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
+import { API_ENDPOINTS } from '../utils/apiConfig'
 
 export default function Register () {
   const [username, setUsername] = useState('')
@@ -20,7 +21,7 @@ export default function Register () {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post('/api/auth/register', { username, password, email })
+      const res = await axios.post(API_ENDPOINTS.register, { username, password, email })
       console.log('Registration successful:', res.data.message)
       // Redirect to home page on successful registration
       Router.push('/')

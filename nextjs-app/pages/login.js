@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
 import { setCookie } from 'nookies'
+import { API_ENDPOINTS } from '../utils/apiConfig'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -20,7 +21,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post('/api/auth/login', { username, password }, { withCredentials: true })
+      const res = await axios.post(API_ENDPOINTS.login, { username, password }, { withCredentials: true })
       console.log('Login successful:', res.data.message)
 
       // Store the JWT token in a cookie

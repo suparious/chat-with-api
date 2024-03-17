@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from '../context/QueryContext'; // Import the useQuery hook
 import ProgressIndicator from './ProgressIndicator'; // Import the ProgressIndicator component
+import { API_ENDPOINTS } from '../utils/apiConfig'; // Import the API configuration
 
 function EconomyDataQueryForm() {
   const { query, setQuery, results, setResults, error, setError, loading, setLoading } = useQuery(); // Use the context
@@ -23,11 +24,12 @@ function EconomyDataQueryForm() {
     setLoading(true); // Use the context to set loading
 
     try {
-      const response = await axios.post('/api/data/query', { query }, { withCredentials: true });
+      const response = await axios.post(API_ENDPOINTS.queryData, { query }, { withCredentials: true });
       setResults(response.data); // Use the context to set results
       console.log('Data fetched successfully:', response.data);
     } catch (err) {
       console.error('Error fetching data:', err.response ? err.response.data.message : 'Failed to fetch data. Please try again.', err);
+      console.error('Error trace:', err.stack);
       setError(err.response ? err.response.data.message : 'Failed to fetch data. Please try again.'); // Use the context to set error
     } finally {
       setLoading(false); // Use the context to reset loading

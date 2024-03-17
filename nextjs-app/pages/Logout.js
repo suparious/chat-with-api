@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
-import Router from 'next/router';
 import { destroyCookie } from 'nookies';
+import { API_ENDPOINTS } from '../utils/apiConfig';
 
-export default function Logout() {
+const Logout = () => {
+  const router = useRouter();
+
   useEffect(() => {
     const logout = async () => {
       try {
-        await axios.post('/api/auth/logout', {}, { withCredentials: true });
+        await axios.post(API_ENDPOINTS.logout, {}, { withCredentials: true });
         console.log('Logout successful');
         destroyCookie(null, 'jwt');
         localStorage.removeItem('isAuthenticated');
-        Router.push('/');
+        router.push('/');
       } catch (err) {
         console.error('Logout failed:', err.response ? err.response.data.message : err.message);
         console.error('Error stack:', err.stack);
@@ -21,5 +24,7 @@ export default function Logout() {
     logout();
   }, []);
 
-  return <div>Logging out...</div>;
-}
+  return <div style={{ textAlign: 'center', marginTop: '20%' }}>Redirecting...</div>;
+};
+
+export default Logout;
