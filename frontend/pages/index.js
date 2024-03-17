@@ -4,9 +4,9 @@ import Layout from '../components/Layout'
 import PropTypes from 'prop-types'
 
 export async function getStaticProps() {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   try {
-    const res = await axios.get(`${backendUrl}/api/welcome-info`);
+    const res = await axios.get(`${backendUrl}/v1/data`);
     return {
       props: {
         welcomeInfo: res.data,
@@ -30,8 +30,8 @@ export default function Home({ welcomeInfo }) {
   const [dynamicWelcomeInfo, setDynamicWelcomeInfo] = useState(welcomeInfo);
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
-    axios.get(`${backendUrl}/api/welcome-info`)
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    axios.get(`${backendUrl}/v1/data`)
       .then(res => setDynamicWelcomeInfo(res.data))
       .catch(error => console.error('Failed to fetch welcome info dynamically:', error.message));
   }, []);
