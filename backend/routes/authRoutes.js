@@ -1,6 +1,4 @@
-
 const express = require('express');
-const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken for JWT handling
 const router = express.Router();
@@ -30,36 +28,34 @@ router.post('/api/auth/register', async (req, res) => {
 });
 
 // User login
-router.post('/api/auth/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      console.error('Server error during authentication:', err);
-      console.error('Error stack:', err.stack);
-      return res.status(500).json({ message: 'Server error during authentication' });
-    }
+router.post('/api/auth/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    let user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: info.message });
+      return res.status(401).json({ message: 'User not found' });
     }
-    req.logIn(user, { session: false }, (err) => { // Properly disable session for JWT
-      if (err) {
-        console.error('Server error during JWT token creation:', err);
-        console.error('Error stack:', err.stack);
-        return res.status(500).json({ message: 'Server error during JWT token creation' });
-      }
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      return res.status(200).json({
-        message: 'Logged in successfully',
-        token: 'Bearer ' + token
-      });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({
+      message: 'Logged in successfully',
+      token: 'Bearer ' + token
     });
-  })(req, res, next);
+  } catch (error) {
+    console.error('Error during login:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ message: 'Server error during login' });
+  }
 });
 
 // User logout
+// Since JWT is stateless, logging out is handled client-side by deleting the stored token
 router.post('/api/auth/logout', (req, res) => {
-  // Since JWT is stateless, this route simply informs the client to delete the stored token
-  console.log('User initiated logout');
-  res.status(200).json({ message: 'Please clear your JWT token client-side to log out successfully.' });
+  console.log('User initiated logout. Since JWT is stateless, no action is required server-side.');
+  res.status(200).json({ message: 'Logout successful. Remember to clear your JWT token client-side.' });
 });
 
 module.exports = router;

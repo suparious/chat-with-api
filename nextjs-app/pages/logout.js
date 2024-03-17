@@ -1,34 +1,18 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const Logout = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const logout = async () => {
-      try {
-        await axios.post('/api/auth/logout', {}, { withCredentials: true });
-        localStorage.removeItem('isAuthenticated');
-        router.push('/');
-      } catch (error) {
-        console.error('Error during logout:', error.message, error.stack);
-        // Redirect or show an error message based on your application's requirement
-        router.push('/login'); // Assuming you have a login page to redirect to in case of failure
-      } finally {
-        setLoading(false);
-      }
-    };
-    logout();
+    localStorage.removeItem('isAuthenticated');
+    console.log('User logged out. JWT token removed from localStorage.');
+    router.push('/').catch((error) => {
+      console.error('Error redirecting after logout:', error.message, error.stack);
+    });
   }, [router]);
 
-  if (loading) {
-    return <div style={{ textAlign: 'center', marginTop: '20%' }}>Logging out...</div>;
-  }
-
-  // Normally, you wouldn't reach this return as the user would be redirected,
-  // but it's here as a fallback
+  // As the logout process is instantaneous from the client side, this page will always redirect.
   return <div style={{ textAlign: 'center', marginTop: '20%' }}>Redirecting...</div>;
 };
 
