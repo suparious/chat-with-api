@@ -1,20 +1,20 @@
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Layout from '../components/Layout'
 import PropTypes from 'prop-types'
 
-export async function getStaticProps () {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000' // Use environment variable
+export async function getStaticProps() {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
   try {
-    const res = await axios.get(`${backendUrl}/api/welcome-info`)
+    const res = await axios.get(`${backendUrl}/api/welcome-info`);
     return {
       props: {
-        welcomeInfo: res.data
-      }
-    }
+        welcomeInfo: res.data,
+      },
+    };
   } catch (error) {
-    console.error('Failed to fetch welcome info:', error.message)
-    console.error('Error stack:', error.stack)
-    // Providing a default value for welcomeInfo in case of error
+    console.error('Failed to fetch welcome info:', error.message);
+    console.error('Error stack:', error.stack);
     return {
       props: {
         welcomeInfo: {
@@ -27,15 +27,22 @@ export async function getStaticProps () {
 }
 
 export default function Home({ welcomeInfo }) {
+  const [dynamicWelcomeInfo, setDynamicWelcomeInfo] = useState(welcomeInfo);
+
+  useEffect(() => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+    axios.get(`${backendUrl}/api/welcome-info`)
+      .then(res => setDynamicWelcomeInfo(res.data))
+      .catch(error => console.error('Failed to fetch welcome info dynamically:', error.message));
+  }, []);
+
   return (
     <Layout>
       <div>
         <h1>Welcome to Chat_with_USA_Economy_Data</h1>
-        {/* Maintain a simple welcome message for users preferring a brief introduction */}
         <p>Welcome to the Next.js app for Chat_with_USA_Economy_Data!</p>
-        {/* Provide more detailed information for users interested in learning more */}
-        {welcomeInfo.message && <p>{welcomeInfo.message}</p>}
-        {welcomeInfo.appDescription && <p>{welcomeInfo.appDescription}</p>}
+        {dynamicWelcomeInfo.message && <p>{dynamicWelcomeInfo.message}</p>}
+        {dynamicWelcomeInfo.appDescription && <p>{dynamicWelcomeInfo.appDescription}</p>}
       </div>
     </Layout>
   );
@@ -43,7 +50,7 @@ export default function Home({ welcomeInfo }) {
 
 Home.propTypes = {
   welcomeInfo: PropTypes.shape({
-    message: PropTypes.string,
-    appDescription: PropTypes.string
-  }).isRequired
+    message: PropTypes.string.isRequired,
+    appDescription: PropTypes.string.isRequired,
+  }).isRequired,
 }
