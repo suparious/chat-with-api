@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors');
-
-// Configuring CORS
-const corsOptions = {
-  origin: 'http://localhost:3001',
-  credentials: true,
-};
-
-router.use(cors(corsOptions));
+// Example of route-specific CORS configuration
+//const cors = require('cors');
+//
+//const customCorsOptions = {
+//  origin: 'https://example.com',
+//  credentials: true,
+//};
+//router.get('/api/special-endpoint', cors(customCorsOptions), (req, res) => {
+//  // Route logic here
+//});
 
 // Welcome info endpoint
 router.get('/api/welcome-info', (req, res) => {

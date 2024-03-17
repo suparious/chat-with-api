@@ -26,41 +26,80 @@ const port = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Serve generated charts statically
-app.use('/downloads', express.static('downloads'));
+// Database connections
+// Mongoose Events for detailed connection handling
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connection established.');
+});
 
-// Database connection
-mongoose
-  .connect(process.env.DATABASE_URL)
-  .then(() => {
-    console.log("Database connected successfully");
-  })
+mongoose.connection.on('error', (err) => {
+  console.error('Mongoose connection error: ' + err.message);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose connection disconnected.');
+});
+
+// Attempt to connect to MongoDB
+mongoose.connect(process.env.DATABASE_URL)
   .catch((err) => {
-    console.error(`Database connection error: ${err.message}`);
-    console.error(err.stack);
+    // Catch initial connection errors
+    console.error(`Initial mongoose connection error: ${err.message}`);
     process.exit(1);
   });
 
+//mongoose
+//  .connect(process.env.DATABASE_URL)
+//  .then(() => {
+//    console.log("Mongoose database connected successfully.");
+//  })
+//  .catch((err) => {
+//    console.error(`Mongoose database connection error: ${err.message}`);
+//    console.error(err.stack);
+//    process.exit(1);
+//  });
+
 // Session configuration with connect-mongo
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
-    cookie: {
-      httpOnly: true, // Enhances security by restricting access from client-side scripts
-      secure: false, // Set to true if using https
-      maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.DATABASE_URL,
+});
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE_URL,
+    // Adding the error handler directly here for conciseness
+    crypto: {
+      secret: 'squirrel'
     }
-  }),
-);
+  }).on('error', error => console.error('Session store error:', error)),
+  cookie: {
+    httpOnly: true,
+    secure: false, // Remember to set this to true if you're using HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Configuring CORS to allow credentials
-app.use(cors({
-  origin: process.env.CORS_ORIGIN, // Use environment variable for CORS origin
+// Parse allowed origins from environment variable
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [];
+// Configuring CORS with dynamic origin support
+const corsOptions = {
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || !allowedOrigins.length) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
-}));
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 // Passport middleware
 app.use(passport.initialize());
@@ -90,6 +129,9 @@ app.use((req, res, next) => {
 
 // Authentication Routes
 app.use(authRoutes);
+
+// Serve generated charts statically
+app.use('/downloads', express.static('downloads'));
 
 // API Routes - Added for handling API requests
 app.use('/api', apiRoutes);
