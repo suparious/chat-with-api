@@ -12,7 +12,7 @@ const router = express.Router();
 //});
 
 // Welcome info endpoint
-router.get('/api/welcome-info', (req, res) => {
+router.get('/', (req, res) => {
   console.log('Fetching welcome info');
   res.json({
     message: 'Welcome to Chat_with_USA_Economy_Data! This innovative application provides access to the most accurate live data on the US economy.',

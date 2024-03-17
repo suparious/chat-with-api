@@ -3,7 +3,16 @@ const router = express.Router();
 const { fetchDataFromBEA, fetchDataFromBLS, fetchDataFromCensus } = require('../utils/dataFetchers');
 const isAuthenticated = require('../middlewares/authMiddleware');
 
-router.post('/data/query', isAuthenticated, async (req, res) => {
+// Welcome info endpoint
+router.get('/', (req, res) => {
+  console.log('Fetching apiDataRoutes info');
+  res.json({
+    message: 'This is the apiDataRoutes',
+    appDescription: 'apiDataRoutes'
+  });
+});
+
+router.post('/query', isAuthenticated, async (req, res) => {
   const { query } = req.body;
   if (!query) {
     return res.status(400).json({ error: 'Query is required' });

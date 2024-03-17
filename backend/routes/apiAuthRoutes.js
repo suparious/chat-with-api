@@ -4,8 +4,17 @@ const jwt = require('jsonwebtoken'); // Import jsonwebtoken for JWT handling
 const router = express.Router();
 const User = require('../models/User');
 
+// Welcome info endpoint
+router.get('/', (req, res) => {
+  console.log('Fetching apiAuthRoutes info');
+  res.json({
+    message: 'This is the apiAuthRoutes',
+    appDescription: 'apiAuthRoutes'
+  });
+});
+
 // User registration
-router.post('/api/auth/register', async (req, res) => {
+router.post('/register', async (req, res) => {
   const { username, password, email } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -28,7 +37,7 @@ router.post('/api/auth/register', async (req, res) => {
 });
 
 // User login
-router.post('/api/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -53,7 +62,7 @@ router.post('/api/auth/login', async (req, res) => {
 
 // User logout
 // Since JWT is stateless, logging out is handled client-side by deleting the stored token
-router.post('/api/auth/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   console.log('User initiated logout. Since JWT is stateless, no action is required server-side.');
   res.status(200).json({ message: 'Logout successful. Remember to clear your JWT token client-side.' });
 });

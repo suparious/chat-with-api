@@ -5,8 +5,9 @@ const mongoose = require("mongoose");
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
-const authRoutes = require("./routes/authRoutes");
-const apiRoutes = require('./routes/apiRoutes'); // Added for API routes
+const apiIndexRoutes = require("./routes/apiIndexRoutes");
+const apiAuthRoutes = require("./routes/apiAuthRoutes");
+const apiDataRoutes = require("./routes/apiDataRoutes");
 const cors = require('cors');
 const path = require('path');
 const passport = require('passport');
@@ -127,19 +128,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Default route
+app.use("/v1", apiIndexRoutes);
 // Authentication Routes
-app.use(authRoutes);
-
-// Serve generated charts statically
-app.use('/downloads', express.static('downloads'));
-
-// API Routes - Added for handling API requests
-app.use('/api', apiRoutes);
-
-// API Root path response
+app.use('/v1/auth', apiAuthRoutes);
+// Data Routes
+app.use('/v1/data', apiDataRoutes);
+// Root path response
 app.get("/", (req, res) => {
   res.json({ message: "Chat_with_USA_Economy_Data API is operational" });
 });
+// Serve generated charts statically
+app.use('/downloads', express.static('downloads'));
 
 // If no routes handled the request, it's a 404
 app.use((req, res, next) => {
