@@ -10,11 +10,12 @@ const cors = require('cors');
 const path = require('path');
 const passport = require('passport');
 const axios = require('axios'); // Newly added for making HTTP requests
+const jwt = require('jsonwebtoken'); // Required for JWT functionality
 
 // Passport config
 require('./config/passport')(passport);
 
-if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET) {
+if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET || !process.env.JWT_SECRET) {
   console.error("Error: config environment variables not set. Please create/edit .env configuration file.");
   process.exit(-1);
 }
@@ -101,6 +102,7 @@ app.get("/", (req, res) => {
 
 // If no routes handled the request, it's a 404
 app.use((req, res, next) => {
+  console.log('404 Not Found:', req.path);
   res.status(404).send("Page not found.");
 });
 

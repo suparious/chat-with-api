@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import Router from 'next/router';
+import { destroyCookie } from 'nookies';
 
 export default function Logout() {
   useEffect(() => {
@@ -8,6 +9,7 @@ export default function Logout() {
       try {
         await axios.post('/api/auth/logout', {}, { withCredentials: true });
         console.log('Logout successful');
+        destroyCookie(null, 'jwt');
         localStorage.removeItem('isAuthenticated');
         Router.push('/');
       } catch (err) {

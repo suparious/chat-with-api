@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
+import { setCookie } from 'nookies'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -21,6 +22,13 @@ export default function Login() {
     try {
       const res = await axios.post('/api/auth/login', { username, password }, { withCredentials: true })
       console.log('Login successful:', res.data.message)
+
+      // Store the JWT token in a cookie
+      setCookie(null, 'jwt', res.data.token, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      })
+      console.log('JWT token stored in cookie')
 
       // Update local storage to reflect authentication state
       localStorage.setItem('isAuthenticated', 'true')
