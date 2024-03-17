@@ -1,5 +1,6 @@
 // Load environment variables
 require("dotenv").config();
+const validateEnv = require('./utils/envValidator'); // Import the environment variable validator
 const mongoose = require("mongoose");
 const express = require("express");
 const session = require("express-session");
@@ -15,10 +16,8 @@ const jwt = require('jsonwebtoken'); // Required for JWT functionality
 // Passport config
 require('./config/passport')(passport);
 
-if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET || !process.env.JWT_SECRET) {
-  console.error("Error: config environment variables not set. Please create/edit .env configuration file.");
-  process.exit(-1);
-}
+// Validate environment variables as early as possible
+validateEnv();
 
 const app = express();
 const port = process.env.PORT || 3000;
