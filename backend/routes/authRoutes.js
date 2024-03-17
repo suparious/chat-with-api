@@ -1,4 +1,4 @@
-``` 
+
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
@@ -56,8 +56,8 @@ router.post('/api/auth/login', (req, res, next) => {
 });
 
 // User logout
-router.get('/api/auth/logout', (req, res) => {
-  // Note: Since JWT is stateless, this route simply informs the client to delete the stored token
+router.post('/api/auth/logout', (req, res) => {
+  // Since JWT is stateless, this route simply informs the client to delete the stored token
   console.log('User initiated logout');
   res.status(200).json({ message: 'Please clear your JWT token client-side to log out successfully.' });
 });
