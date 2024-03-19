@@ -1,0 +1,24 @@
+BEAAPI: {
+  "Request": {
+    "RequestParam": [
+      {
+        "@ParameterName": "KEYWORD",
+        "@ParameterValue": "THE CURRENT UNEMPLOYMENT RATE VARIES BY COUNTRY IN THE UNITED STATES, THE MOST RECENT UNEMPLOYMENT RATE IS 54 AS OF AUGUST 2021 HOWEVER, IT IS IMPORTANT TO NOTE THAT UNEMPLOYMENT RATES CAN VARY MONTH TO MONTH AND CAN BE INFLUENCED BY A VARIETY OF FACTORS...[MODIFIED TO PREVENT CROSS-SITE SCRIPTING]"
+      },
+      {
+        "@ParameterName": "CorrelationID",
+        "@ParameterValue": "48986fce-ef5d-4c5e-807f-ce04215d032f"
+      },
+      {
+        "@ParameterName": "RESULTFORMAT",
+        "@ParameterValue": "JSON"
+      }
+    ]
+  },
+  "Results": {
+    "Error": {
+      "@APIErrorCode": "1",
+      "@APIErrorDescription": "Invalid Request - Invalid Parameters."
+    }
+  }
+}
